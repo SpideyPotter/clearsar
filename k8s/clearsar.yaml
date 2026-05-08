@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: clearsar
+  labels:
+    app: yolov9e-train
+    app.kubernetes.io/name: local-storage   # REQUIRED in your cluster
+
+spec:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  containers:
+    - name: pytorch
+      image: bmu-headnode:9443/nvcr.io/nvidia/pytorch:24.10-py3
+
+      command: ["/bin/bash", "-c", "while true; do sleep 3600; done"]
+
+      workingDir: /workspace
+      tty: true
+      stdin: true
+
+      resources:
+        requests:
+          cpu: "16"
+          memory: "24Gi"
+          nvidia.com/mig-2g.35gb: 1   # FIXED (int, not string)
+        limits:
+          cpu: "16"
+          memory: "24Gi"
+          nvidia.com/mig-2g.35gb: 1
+
+      volumeMounts:
+        - name: clearsar-storage
+          mountPath: /workspace
+
+        - name: dshm
+          mountPath: /dev/shm
+
+      env:
+        # Fix pip + user issues
+        - name: HOME
+          value: /workspace
+
+        - name: CLEARSAR_TRAIN_CACHE
+          value: "disk"
+
+        - name: CLEARSAR_TRAIN_BATCH
+          value: "2"
+
+        - name: CLEARSAR_TRAIN_WORKERS
+          value: "8"   # safer than 12
+
+  volumes:
+    - name: clearsar-storage
+      hostPath:
+        path: /home/dgx-s-bmu-cse-230480/clearsar   # FIXED (not full home)
+        type: Directory
+
+    - name: dshm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 8Gi

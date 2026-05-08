@@ -1,0 +1,61 @@
+.DS_Store
+Thumbs.db
+
+# Python cache/bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+.venv*/
+venv*/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build/package artifacts
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+*.log
+nohup.out
+nohup*.out
+
+# IDE/editor
+.idea/
+.vscode/
+.cursor/
+
+# Local configs/secrets
+.env
+.env.*
+*.pem
+*.key
+.bash_history
+.cache/
+.config/
+
+# Model/data artifacts (common for this project)
+runs/
+eda/
+pred_cache_v2/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.npy
+*.npz
+
+yolov9e_exp9/
+ClearSAR/
+clearsar_yolo/
+
+*.json

@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+# Repo root (directory containing this script). In the k8s pod, mount is usually /workspace.
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "[1] Clean OpenCV"
+pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless || true
+rm -rf /usr/local/lib/python3.10/dist-packages/cv2 \
+       /usr/local/lib/python3.10/dist-packages/opencv_*dist-info
+
+echo "[2] Install core"
+pip install --no-cache-dir numpy==1.26.4
+pip install --no-cache-dir opencv-python-headless==4.10.0.84
+
+echo "[3] installing ultralytics "
+# --no-deps: keep image-provided torch/CUDA; avoid pulling opencv-python over headless
+pip install --no-cache-dir --no-deps ultralytics
+
+echo "[4] Safety cleanup"
+pip uninstall -y opencv-python opencv-contrib-python || true
+
+echo "[5] Verify (fork must provide ultralytics.utils.nwd)"
+python - <<EOF
+import numpy, cv2
+import ultralytics
+print("numpy:", numpy.__version__)
+print("cv2:", cv2.__version__)
+EOF
+
+
