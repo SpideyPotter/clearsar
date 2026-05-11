@@ -59,3 +59,7 @@ ClearSAR/
 clearsar_yolo/
 
 *.json
+
+# Exported bundle artifacts
+export/
+export.zip
