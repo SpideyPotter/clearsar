@@ -11,11 +11,24 @@ spec:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists
       effect: NoSchedule
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoSchedule
   containers:
     - name: pytorch
-      image: bmu-headnode:9443/nvcr.io/nvidia/pytorch:24.10-py3
+      image: python:3.10-slim
 
-      command: ["/bin/bash", "-c", "while true; do sleep 3600; done"]
+      command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          pip install --no-cache-dir pillow tqdm ensemble-boxes
+          python submit_test_predictions.py --5fold-only --final-conf 0.75
+          while true; do sleep 3600; done
 
       workingDir: /workspace
       tty: true
@@ -23,12 +36,12 @@ spec:
 
       resources:
         requests:
-          cpu: "16"
-          memory: "24Gi"
-          nvidia.com/mig-2g.35gb: 1   # FIXED (int, not string)
+          cpu: "4"
+          memory: "8Gi"
+          nvidia.com/mig-2g.35gb: 1   # int, not string (Kyverno require-gpu)
         limits:
-          cpu: "16"
-          memory: "24Gi"
+          cpu: "8"
+          memory: "16Gi"
           nvidia.com/mig-2g.35gb: 1
 
       volumeMounts:

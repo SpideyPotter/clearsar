@@ -63,3 +63,6 @@ clearsar_yolo/
 # Exported bundle artifacts
 export/
 export.zip
+# Local agent/job scratch output
+.agent_shell_out.txt
+.k8s_job_report.txt
