@@ -44,7 +44,10 @@ nohup*.out
 .config/
 
 # Model/data artifacts (common for this project)
-runs/
+runs/**
+!runs/**/
+!runs/**/args.yaml
+!runs/**/results.csv
 eda/
 pred_cache_v2/
 *.pt
@@ -54,15 +57,17 @@ pred_cache_v2/
 *.npy
 *.npz
 
-yolov9e_exp9/
+/yolov9e_exp9/
 ClearSAR/
-clearsar_yolo/
+clearsar_yolo/*
+!clearsar_yolo/clearsar.yaml
 
 *.json
 
 # Exported bundle artifacts
 export/
 export.zip
+
 # Local agent/job scratch output
 .agent_shell_out.txt
 .k8s_job_report.txt
